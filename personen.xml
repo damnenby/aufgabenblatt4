@@ -1,0 +1,23 @@
+<personen>
+    <person id="1">
+        <name>Mustermann</name>
+        <vorname>Max</vorname>
+        <geburtsdatum>25.11.1983</geburtsdatum>
+        <postleitzahl>54321</postleitzahl>
+        <ort>Bierdorf</ort>
+        <hobby>Lesen</hobby>
+        <lieblingsgericht>Pizza</lieblingsgericht>
+        <lieblingsband>Rammstein</lieblingsband>
+    </person>
+
+    <person id="2">
+        <name>Musterfrau</name>
+        <vorname>Erika</vorname>
+        <geburtsdatum>01.01.1990</geburtsdatum>
+        <postleitzahl>12345</postleitzahl>
+        <ort>Hamburg</ort>
+        <hobby></hobby>
+        <lieblingsgericht>Spaghetti</lieblingsgericht>
+        <lieblingsband></lieblingsband>
+    </person>
+</personen>
