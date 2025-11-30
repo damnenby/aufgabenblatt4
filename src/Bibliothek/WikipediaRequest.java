@@ -5,6 +5,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -40,13 +45,28 @@ public class WikipediaRequest {
 
                 xmlReader.parse(inputSource);
 
+
                 String title = handler.getTitle();
                 String author = handler.getAuthor();
+                String timestamp = handler.getTimestamp();
 
                 if (title == null || title.isEmpty() || author == null || author.isEmpty()) {
                     System.out.println("Kein Buch oder kein Urheber gefunden.");
                 } else {
-                    System.out.println(title);
+                    System.out.println("Suche nach: " + title);
+
+                    if (timestamp != null && !timestamp.isEmpty()) {
+                        try {
+                            Instant instant = Instant.parse(timestamp);
+                            ZonedDateTime local = instant.atZone(ZoneId.systemDefault());
+                            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy 'um' HH:mm 'Uhr'");
+                            String formatted = local.format(fmt);
+                            System.out.println("Letzte Änderung: " + formatted);
+                        } catch (Exception e) {
+                            System.out.println("Letzte Änderung (roh): " + timestamp);
+                        }
+                    }
+
                     System.out.println("Urheber: " + author);
                 }
             }

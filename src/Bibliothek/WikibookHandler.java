@@ -11,6 +11,7 @@ public class WikibookHandler implements ContentHandler {
     private String currentValue;
     private String title;
     private String author;
+    private String timestamp;
 
     public String getTitle() {
         return title;
@@ -18,6 +19,10 @@ public class WikibookHandler implements ContentHandler {
 
     public String getAuthor() {
         return author;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
     }
 
     @Override
@@ -40,6 +45,10 @@ public class WikibookHandler implements ContentHandler {
 
         if ("username".equals(localName) || "ip".equals(localName)) {
             author = currentValue.trim();
+        }
+
+        if ("timestamp".equals(localName)) {
+            timestamp = currentValue.trim();
         }
     }
 
