@@ -13,6 +13,9 @@ public class WikibookHandler implements ContentHandler {
     private String author;
     private String timestamp;
 
+    private boolean inText = false;
+    private StringBuilder textContent = new StringBuilder();
+
     public String getTitle() {
         return title;
     }
@@ -25,14 +28,28 @@ public class WikibookHandler implements ContentHandler {
         return timestamp;
     }
 
+    public String getText() {
+        return textContent.toString();
+    }
+
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         currentValue = new String(ch, start, length);
+
+        if (inText) {
+            textContent.append(ch, start, length);
+        }
     }
 
     @Override
     public void startElement(String uri, String localName, String qName,
                              Attributes atts) throws SAXException {
+
+        if ("text".equals(localName)) {
+            inText = true;
+            textContent.setLength(0);
+        }
+
     }
 
     @Override
@@ -49,6 +66,10 @@ public class WikibookHandler implements ContentHandler {
 
         if ("timestamp".equals(localName)) {
             timestamp = currentValue.trim();
+        }
+
+        if ("text".equals(localName)) {
+            inText = false;
         }
     }
 

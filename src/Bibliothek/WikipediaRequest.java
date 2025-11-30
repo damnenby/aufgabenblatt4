@@ -1,5 +1,8 @@
 package Bibliothek;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -50,16 +53,54 @@ public class WikipediaRequest {
                 String author = handler.getAuthor();
                 String timestamp = handler.getTimestamp();
 
+                String text = handler.getText();
+
+                String regal = null;
+                List<String> kapitelListe = new ArrayList<>();
+
+                if (text != null) {
+                    int posRegal = text.indexOf("{{Regal");
+                    if (posRegal >= 0) {
+                        int endRegal = text.indexOf("}}", posRegal);
+                        if (endRegal > posRegal) {
+                            String regalTemplate = text.substring(posRegal, endRegal);
+                            int lastPipe = regalTemplate.lastIndexOf('|');
+                            if (lastPipe >= 0 && lastPipe + 1 < regalTemplate.length()) {
+                                regal = regalTemplate.substring(lastPipe + 1).trim();
+                            }
+                        }
+                    }
+                    String[] lines = text.split("\n");
+                    for (String line : lines) {
+                        line = line.trim();
+                        if (line.startsWith("==") && line.endsWith("==")) {
+                            // alle '=' rauswerfen und trimmen
+                            String kapitelName = line.replace("=", "").trim();
+                            if (!kapitelName.isEmpty()) {
+                                kapitelListe.add(kapitelName);
+                            }
+                        }
+                    }
+                }
+
                 if (title == null || title.isEmpty() || author == null || author.isEmpty()) {
                     System.out.println("Kein Buch oder kein Urheber gefunden.");
                 } else {
-                    System.out.println("Suche nach: " + title);
+                    System.out.println(title);
 
+                    if (regal != null && !regal.isEmpty()) {
+                        System.out.println("Regal: " + regal);
+                    }
+                    System.out.println("Kapitel:");
+                    for (int i = 0; i < kapitelListe.size(); i++) {
+                        System.out.println((i + 1) + " " + kapitelListe.get(i));
+                    }
                     if (timestamp != null && !timestamp.isEmpty()) {
                         try {
                             Instant instant = Instant.parse(timestamp);
                             ZonedDateTime local = instant.atZone(ZoneId.systemDefault());
-                            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy 'um' HH:mm 'Uhr'");
+                            DateTimeFormatter fmt =
+                                    DateTimeFormatter.ofPattern("dd. MMMM yyyy 'um' HH:mm 'Uhr'");
                             String formatted = local.format(fmt);
                             System.out.println("Letzte Änderung: " + formatted);
                         } catch (Exception e) {
